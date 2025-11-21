@@ -3,7 +3,7 @@
 import AuthTitle from '@/components/common/AuthTitle';
 import FormField from '@/components/common/FormField';
 import { Spinner } from '@/components/ui/spinner';
-import { VerifyOtpFormData, verifyOtpSchema } from '@/lib/schemas/authSchema';
+import { ForgotPasswordFormData, forgotPasswordSchema } from '@/lib/schemas/authSchema';
 import { cn } from '@/lib/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
@@ -11,23 +11,23 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 
-const VerifyOtp = () => {
+const ForgotPassword = () => {
   const [isLoading] = useState(false);
 
   // const [signin, { isLoading }] = useSigninMutation();
 
   const router = useRouter();
-  const verifyForm = useForm<VerifyOtpFormData>({
-    resolver: zodResolver(verifyOtpSchema),
+  const resetForm = useForm<ForgotPasswordFormData>({
+    resolver: zodResolver(forgotPasswordSchema),
   });
 
-  const verifyOtpSubmit = async () => {
+  const forgotPasswordSubmit = async () => {
     try {
       //  await signin({ email: data?.email, password: data?.password }).unwrap();
       toast.success('Login Successful', {
         description: 'Welcome back!',
       });
-      verifyForm.reset();
+      resetForm.reset();
       router.push('/contest/joined');
     } catch (err: any) {
       toast.error('Oops! Something went wrong', {
@@ -41,18 +41,21 @@ const VerifyOtp = () => {
     <section className="flex min-h-dvh items-center justify-center p-5">
       <div className="w-full max-w-lg space-y-5 rounded-xl border border-gray-700 bg-gray-800 p-5 lg:p-10">
         <AuthTitle
-          title="Verify Code"
-          description="A 6-digit verification code has been sent to your email. Please enter it below."
+          title="Forgot Password"
+          description="Enter your registered email address to receive a verification code."
         />
 
-        <form onSubmit={verifyForm.handleSubmit(verifyOtpSubmit)} className="flex flex-col gap-3">
+        <form
+          onSubmit={resetForm.handleSubmit(forgotPasswordSubmit)}
+          className="flex flex-col gap-3"
+        >
           <FormField
             label="Email Address"
             id="email"
             type="email"
             placeholder="Enter email address"
-            register={verifyForm.register}
-            error={verifyForm.formState.errors.email?.message as string}
+            register={resetForm.register}
+            error={resetForm.formState.errors.email?.message as string}
           />
 
           <button
@@ -72,7 +75,7 @@ const VerifyOtp = () => {
                 isLoading ? 'translate-x-2' : 'translate-x-0',
               )}
             >
-              {isLoading ? 'Verifying...' : 'Verify'}
+              {isLoading ? 'Sending...' : 'Send Code'}
             </span>
           </button>
         </form>
@@ -81,4 +84,4 @@ const VerifyOtp = () => {
   );
 };
 
-export default VerifyOtp;
+export default ForgotPassword;
